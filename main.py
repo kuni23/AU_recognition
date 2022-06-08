@@ -1,15 +1,15 @@
-from research.fer.dataset_modules.dataset_imbased import AUDataset, AUDatasetPrototype
+from dataset_modules.dataset_imbased import AUDataset, AUDatasetPrototype
 from torch.utils.data import DataLoader, ConcatDataset
 from sklearn.metrics import confusion_matrix
 import torch
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
-from research.fer.models.models import Resnet, KeypointNet, Resnet_fusion, SimpleCNN
-from research.fer.training_scripts.training_resnet import calculate_skewed_f1
+from models import Resnet, KeypointNet, Resnet_fusion, SimpleCNN
+from training_resnet import calculate_skewed_f1
 from sklearn.metrics import f1_score
 import argparse
-from research.fer.utils import *
+from utils import *
 import numpy as np
 
 
