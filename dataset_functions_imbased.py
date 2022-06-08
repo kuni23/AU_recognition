@@ -8,9 +8,9 @@ import pickle as pkl
 from PIL import Image
 from typing import Dict
 
-from research.fer.emotion import EM_INDICES
-from research.fer.dataset_modules.database_functions import DatabaseManagement
-from research.fer.dataset_modules.jittering import jitter_points
+from emotion import EM_INDICES
+from database_functions import DatabaseManagement
+from jittering import jitter_points
 
 random.seed(823)
 # dict for start, stop frames
