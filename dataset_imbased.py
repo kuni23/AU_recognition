@@ -5,8 +5,8 @@ import torch
 from typing import Dict
 from torch.utils.data import Dataset
 
-from research.fer.dataset_modules.dataset_functions_imbased import AuDataManagement, EmotionDataManagement, AuDataManagementPrototype
-from research.fer.emotion import AU_INDICES, EM_INDICES
+from dataset_functions_imbased import AuDataManagement, EmotionDataManagement, AuDataManagementPrototype
+from emotion import AU_INDICES, EM_INDICES
 
 class AUDatasetPrototype(Dataset):
 
