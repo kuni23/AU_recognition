@@ -1,4 +1,4 @@
-from dataset_modules.dataset_imbased import AUDataset, AUDatasetPrototype
+from dataset_imbased import AUDataset, AUDatasetPrototype
 from torch.utils.data import DataLoader, ConcatDataset
 from sklearn.metrics import confusion_matrix
 import torch
