@@ -5,7 +5,7 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 import numpy as np
-from research.fer.emotion import AU_INDICES
+from emotion import AU_INDICES
 import time
 
 
