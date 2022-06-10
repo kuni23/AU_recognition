@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
 import re
-from research.fer.dataset_modules.database_functions import DatabaseManagement
+from database_functions import DatabaseManagement
 import pickle
 import bisect
 import random
-from research.fer.dataset_modules.jittering import jitter_points
+from jittering import jitter_points
 
 
 
