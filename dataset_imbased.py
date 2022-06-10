@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
-from research.fer.dataset_modules.dataset_functions_imbased import AuDataManagement, EmotionDataManagement, EM_INDICES
+from dataset_functions_imbased import AuDataManagement, EmotionDataManagement, EM_INDICES
 import torch
 
 
