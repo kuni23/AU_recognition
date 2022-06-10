@@ -8,7 +8,6 @@ import random
 from research.fer.dataset_modules.jittering import jitter_points
 
 
-EM_INDICES = ["anger", "fear", "happiness", "neutral", "sadness", "surprise", "disgust"]
 
 # dict for start, stop frames
 sbir_border = {
@@ -200,117 +199,6 @@ class AuDataManagement():  # ApplaudDataManipulation
 
         return image, G, image_blurred, feature, y, resource.reference_position, self.data_ids[data_idx]
 
-
-class EmotionDataManagement():
-    def __init__(self, db_path: str, current_dataset: str, data_type: str, annot_type: str, way_of_split):
-        self.DM = DatabaseManagement(db_path)
-        data_ids = self.DM.get_ids_by_dataset_name(current_dataset)
-        
-        #####Initializing
-        self.annot_type = annot_type
-        self.current_dataset = current_dataset
-
-        if data_type == 'train_split':
-            if self.current_dataset == 'DDCF':
-                self.data_ids = [current_id for current_id in data_ids if current_id.split('_')[0] not in ddcf_valid_ids]
-            else:
-                self.data_ids = [current_id for current_id in data_ids if current_id.split('_')[1] not in childefes_valid_ids]
-
-        if data_type == 'valid_split':
-            if self.current_dataset == 'DDCF':
-                self.data_ids = [current_id for current_id in data_ids if current_id.split('_')[0] in ddcf_valid_ids]
-            else:
-                self.data_ids = [current_id for current_id in data_ids if current_id.split('_')[1] in childefes_valid_ids]
-
-        self.dataset_length = 0
-        self.dataset_intervals = []
-        self.uuids = []
-        self.annots = []
-
-        for data_id in self.data_ids:
-            data_uuids = self.DM.get_resource_ids_by_data_id(data_id)
-
-            valid_data_uuids = []
-            for uuid in data_uuids:
-
-                if current_dataset == 'DDCF':
-                    current_annot = self.DM.get_annotation_by_resource_id(uuid)
-                    
-                    if current_annot[0].name in EM_INDICES:
-                        valid_data_uuids.append(uuid)
-                    
-                if current_dataset == 'CHILDEFES':
-                    #print(uuid)
-                    current_annot = self.DM.get_annotation_by_resource_id(uuid)
-                    
-                    if current_annot[0].name in EM_INDICES:
-                        valid_data_uuids.append(uuid)
-                
-            self.dataset_length += len(valid_data_uuids)
-            self.dataset_intervals.append(self.dataset_length)
-            self.uuids.append(valid_data_uuids)
-            annots = []
-            for data_uuid in valid_data_uuids:
-                annots.append(self.DM.get_annotation_by_resource_id(data_uuid))
-            self.annots.append(annots)
-            
-            
-    # get information from db
-    def load_data_to_memory(self, idx):
-
-        data_idx = bisect.bisect_right(self.dataset_intervals, idx)
-        # obtain the frame index
-        if data_idx == 0:
-            frame_idx = idx
-        else:
-            frame_idx = idx - self.dataset_intervals[data_idx - 1]
-
-        # reading the frame
-        uuid = self.uuids[data_idx][frame_idx]
-        resource = self.DM.get_resource_by_resource_id(uuid)
-
-        # RETRIEVE THE DATA
-        image = pickle.loads(resource.data)
-        image = cv2.imdecode(image, cv2.IMREAD_GRAYSCALE).astype(np.float64)
-
-        current_feature = self.DM.get_feature_by_resource_id(uuid, 'perona_malik_diffusion_2022_04_22')
-        current_feature_data = pickle.loads(current_feature.data)
-        G = cv2.imdecode(current_feature_data, cv2.IMREAD_GRAYSCALE).astype(np.float64)
-
-        current_feature = self.DM.get_feature_by_resource_id(uuid, 'perona_malik_only_diffusion_2022_04_26')
-        current_feature_data = pickle.loads(current_feature.data)
-        image_blurred = cv2.imdecode(current_feature_data, cv2.IMREAD_GRAYSCALE).astype(np.float64)
-        
-        if len(image.shape) == 2:
-            image = image[:, :, np.newaxis]
-            G = G[:, :, np.newaxis]
-            image_blurred = image_blurred[:, :, np.newaxis]
-
-        if image.shape[2] == 1:
-            image = np.repeat(image, 3, 2)
-            G = np.repeat(G, 3, 2)
-            image_blurred = np.repeat(image_blurred, 3, 2)
-
-        # facial keypoints
-        if self.current_dataset == 'SBIR':
-            feature = self.DM.get_feature_by_resource_id(uuid, 'extracted_facial_positions_2d_v1_2022_04_21_no_conf')
-        else:
-            feature = self.DM.get_feature_by_resource_id(uuid, 'extracted_facial_positions_2d_v1_2022_03_26')
-        #print(uuid)
-        feature = pickle.loads(feature.data)
-
-        # RETRIVE ANNOTATION
-        # init the annots
-        y = {}
-
-        if self.annot_type == 'emotion':
-            for EM in EM_INDICES:
-                y[EM] = 0
-        
-        annots = self.annots[data_idx][frame_idx]
-        y = load_annotation(annots, y)
-
-        return image, G, image_blurred, feature, y, resource.reference_position, self.data_ids[data_idx]
 
 def load_annotation(annots, y):
     for annot in annots:
