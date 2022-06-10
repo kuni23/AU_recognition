@@ -1,4 +1,4 @@
-from dataset_imbased import AUDataset, AUDatasetPrototype
+from dataset_imbased import AUDataset
 from torch.utils.data import DataLoader, ConcatDataset
 from sklearn.metrics import confusion_matrix
 import torch
@@ -28,7 +28,6 @@ def main(test_db_path, test_dataset_name, model_path, way_split, number_split):
     y_true, y_pred = [], []
     all_predictions = {}
     annot_indices = [10]
-    list_of_data_needed = {'data_type': 'tuple', 'keypoints': keypoints_indices['mouth'], 'image': ''}
 
     valid_ds = {
         'db_path': test_db_path,
@@ -37,11 +36,10 @@ def main(test_db_path, test_dataset_name, model_path, way_split, number_split):
         'way_of_split': [1, 5],
         'transform': valid_transform,
         'annot_indices': annot_indices,
-        'list_of_data_needed': list_of_data_needed
 
     }
 
-    test_images = AUDatasetPrototype(**valid_ds)
+    test_images = AUDataset(**valid_ds)
     print(len(test_images))
     model = Resnet_fusion(pretrained_task='neutral_sigmoid', n_classes=len(annot_indices), input_keypoints=34)
 
@@ -99,7 +97,7 @@ if __name__ == '__main__':
 
     param_parser.add_argument('--dbPath_test',
                                 metavar='path2',
-                                default = '/data/emotion_data/rush_emotion_data_reviewed_v7.db',
+                                default = '',
                                 type=str,
                                 help='root path for test images to process')
 
@@ -111,7 +109,7 @@ if __name__ == '__main__':
 
     param_parser.add_argument('--pathModel',
                                 metavar='mod6',
-                                default='/data/runs/2foldcv_finaleval_10/2022_05_29_01_48_39/saved_models/epoch_012-Validation[rush_emotion_data_reviewed_v7-SBIR]F1Score_0.226.ckpt',
+                                default='',
                                 type=str,
                                 help='path of the model to save or to test')
 
