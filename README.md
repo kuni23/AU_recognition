@@ -1,4 +1,2 @@
 # AU_recognition
-This repository includes the codes of action unit training and testing. It might not include all the parts of the whole work due to privacy reasons, but it tries to present the main parts.
-
-The repo illustrates the codes utilized during my master thesis work, so it includes the codes implemented by me. However, some parts are not uploaded to the repository, which are private tools (database creation, database queries, facial detection, facial cropping..) 
+This repo presents the codes utilized during my master thesis work, so it includes the codes implemented by me. However, some parts are not uploaded to the repository, which I only leveraged for my project (database creation, facial cropping, facial detection). As well, it includes images from the in-the-wild test set, which are examined during an extensive error analyis.
